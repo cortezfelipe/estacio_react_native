@@ -33,7 +33,15 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (email, password) => {
     try {
       const response = await api.post('/auth/signin', { email, password });
-      const userData = response.data;
+      // The backend returns `{ user: { ... }, accessToken }`. Consolidate the
+      // response so screens can access user fields directly without drilling
+      // into `user`.
+      const userData = {
+        ...response.data.user,
+        role: response.data.user.isManager ? 'manager' : 'user',
+        accessToken: response.data.accessToken,
+      };
+
       setUser(userData);
       await AsyncStorage.setItem('@parkingapp:user', JSON.stringify(userData));
       api.defaults.headers.common['Authorization'] = `Bearer ${userData.accessToken}`;
