@@ -33,7 +33,7 @@ Esta pasta contém o aplicativo móvel construído em React Native utilizando o 
    npm start
    ```
 
-   O Expo abrirá uma interface no navegador onde você pode rodar o app em um emulador ou em um dispositivo físico usando o aplicativo **Expo Go**.
+   Abra o aplicativo **Expo Go** em um emulador Android/iOS ou em um dispositivo físico para executar o app.
 
 ## Navegação
 
