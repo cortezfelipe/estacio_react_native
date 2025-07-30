@@ -2,6 +2,8 @@ import React, { createContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../api/api';
 
+
+
 /**
  * Authentication context used to share user state across the application.
  * Exposes functions to sign in, sign up, and sign out.  Stores
@@ -14,21 +16,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load any existing token/user from AsyncStorage on mount
-    const loadStorageData = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem('@parkingapp:user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (err) {
-        console.error('Failed to load user from storage', err);
-      } finally {
-        setLoading(false);
+  // Load any existing token/user from AsyncStorage on mount
+  const loadStorageData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('@parkingapp:user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        api.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.accessToken}`; // ✅ setando o token
       }
-    };
-    loadStorageData();
-  }, []);
+    } catch (err) {
+      console.error('Failed to load user from storage', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadStorageData();
+}, []);
+
 
   const signIn = async (email, password) => {
     try {

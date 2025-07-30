@@ -1,13 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import api from '../api/api';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import api from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 
 export default function ManageSlotsScreen() {
   const { user } = useContext(AuthContext);
   const [slots, setSlots] = useState([]);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,10 +27,10 @@ export default function ManageSlotsScreen() {
   const loadSlots = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/slots');
+      const response = await api.get("/slots");
       setSlots(response.data);
     } catch (err) {
-      Alert.alert('Erro', 'Erro ao carregar vagas');
+      Alert.alert("Erro", "Erro ao carregar vagas");
     } finally {
       setLoading(false);
     }
@@ -29,24 +38,24 @@ export default function ManageSlotsScreen() {
 
   const handleCreate = async () => {
     try {
-      await api.post('/slots', { name, description });
-      setName('');
-      setDescription('');
+      await api.post("/slots", { name, description });
+      setName("");
+      setDescription("");
       loadSlots();
     } catch (err) {
-      Alert.alert('Erro', err.response?.data?.message || 'Erro ao criar vaga');
+      Alert.alert("Erro", err.response?.data?.message || "Erro ao criar vaga");
     }
   };
 
   const handleUpdate = async () => {
     try {
       await api.put(`/slots/${editingId}`, { name, description });
-      setName('');
-      setDescription('');
+      setName("");
+      setDescription("");
       setEditingId(null);
       loadSlots();
     } catch (err) {
-      Alert.alert('Erro', 'Erro ao atualizar vaga');
+      Alert.alert("Erro", "Erro ao atualizar vaga");
     }
   };
 
@@ -61,7 +70,7 @@ export default function ManageSlotsScreen() {
       await api.delete(`/slots/${id}`);
       loadSlots();
     } catch (err) {
-      Alert.alert('Erro', 'Erro ao deletar vaga');
+      Alert.alert("Erro", "Erro ao deletar vaga");
     }
   };
 
@@ -76,7 +85,7 @@ export default function ManageSlotsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {editingId ? 'Editar Vaga' : 'Criar Nova Vaga'}
+        {editingId ? "Editar Vaga" : "Criar Nova Vaga"}
       </Text>
 
       <TextInput
@@ -92,7 +101,7 @@ export default function ManageSlotsScreen() {
         style={styles.input}
       />
       <Button
-        title={editingId ? 'Atualizar Vaga' : 'Criar Vaga'}
+        title={editingId ? "Atualizar Vaga" : "Criar Vaga"}
         onPress={editingId ? handleUpdate : handleCreate}
       />
 
@@ -108,7 +117,11 @@ export default function ManageSlotsScreen() {
               <Text>{item.description}</Text>
               <View style={styles.actions}>
                 <Button title="Editar" onPress={() => handleEdit(item)} />
-                <Button title="Excluir" color="red" onPress={() => handleDelete(item.id)} />
+                <Button
+                  title="Excluir"
+                  color="red"
+                  onPress={() => handleDelete(item.id)}
+                />
               </View>
             </View>
           )}
@@ -120,10 +133,26 @@ export default function ManageSlotsScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 10, borderRadius: 4 },
-  slotItem: { padding: 12, marginVertical: 6, borderWidth: 1, borderColor: '#eee', borderRadius: 6 },
-  slotName: { fontWeight: 'bold', fontSize: 16 },
-  actions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 8,
+    marginBottom: 10,
+    borderRadius: 4,
+  },
+  slotItem: {
+    padding: 12,
+    marginVertical: 6,
+    borderWidth: 1,
+    borderColor: "#eee",
+    borderRadius: 6,
+  },
+  slotName: { fontWeight: "bold", fontSize: 16 },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

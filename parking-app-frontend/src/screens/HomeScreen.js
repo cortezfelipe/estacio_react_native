@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api/api';
 
-/**
- * Home screen displayed after login.  Shows available parking slots and
- * provides access to reservations and manager functions based on user role.
- */
 export default function HomeScreen({ navigation }) {
   const { user, signOut } = useContext(AuthContext);
   const [slots, setSlots] = useState([]);
@@ -31,9 +35,14 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.slotItem}>
       <View style={{ flex: 1 }}>
         <Text style={styles.slotName}>{item.name}</Text>
-        {item.description ? <Text style={styles.slotDescription}>{item.description}</Text> : null}
+        {item.description ? (
+          <Text style={styles.slotDescription}>{item.description}</Text>
+        ) : null}
       </View>
-      <Button title="Reservar" onPress={() => navigation.navigate('Reserve', { slot: item })} />
+      <Button
+        title="Reservar"
+        onPress={() => navigation.navigate('Reserve', { slot: item })}
+      />
     </View>
   );
 
@@ -51,21 +60,37 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.title}>Olá, {user?.name}</Text>
         <Button title="Sair" onPress={signOut} />
       </View>
+
       <FlatList
         data={slots}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        ListHeaderComponent={<Text style={styles.subtitle}>Vagas disponíveis</Text>}
+        ListHeaderComponent={
+          <Text style={styles.subtitle}>Vagas disponíveis</Text>
+        }
+        ListFooterComponent={
+          <View style={styles.footerButtons}>
+            <Button
+              title="Minhas Reservas"
+              onPress={() => navigation.navigate('ReservationsList')}
+            />
+            {user?.role === 'manager' && (
+              <>
+                <View style={styles.buttonSpacing} />
+                <Button
+                  title="Gerenciar Vagas"
+                  onPress={() => navigation.navigate('ManageSlots')}
+                />
+                <View style={styles.buttonSpacing} />
+                <Button
+                  title="Todas Reservas"
+                  onPress={() => navigation.navigate('ReservationsList')}
+                />
+              </>
+            )}
+          </View>
+        }
       />
-      <View style={styles.footerButtons}>
-        <Button title="Minhas Reservas" onPress={() => navigation.navigate('ReservationsList')} />
-        {user?.role === 'manager' && (
-          <>
-            <Button title="Gerenciar Vagas" onPress={() => navigation.navigate('ManageSlots')} />
-            <Button title="Todas Reservas" onPress={() => navigation.navigate('ReservationsList')} />
-          </>
-        )}
-      </View>
     </View>
   );
 }
@@ -110,9 +135,11 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   footerButtons: {
-    marginTop: 16,
-    flexDirection: 'column',
-    gap: 8,
+    marginTop: 24,
+    paddingVertical: 16,
+  },
+  buttonSpacing: {
+    height: 8,
   },
   centered: {
     flex: 1,
