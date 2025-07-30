@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }) {
       <Button title={loading ? 'Entrando...' : 'Entrar'} onPress={handleLogin} disabled={loading} />
       <Text style={styles.text}>
         Não tem uma conta?{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>Cadastre-se</Text>
+        <Text style={styles.link} onPress={() => navigation.navigate('SignupScreen')}>Cadastre-se</Text>
       </Text>
     </View>
   );
