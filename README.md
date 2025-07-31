@@ -2,9 +2,11 @@
 Aplicativo mobile e API backend para controle de vagas de estacionamento. Usuários podem reservar vagas para dias específicos e gestores administram vagas e reservas.
 
 📦 Estrutura do projeto
-estacio_react_native/
- parking-app-backend/   # API REST em Node.js/Express + Sequelize (SQLite)
- parking-app-frontend/  # Aplicativo mobile em React Native (Expo)
+
+estacio_react_native/ 
+parking-app-backend/   # API REST em Node.js/Express + Sequelize (SQLite)
+parking-app-frontend/  # Aplicativo mobile em React Native (Expo)
+
 ✨ Funcionalidades
 Frontend (React Native + Expo)
 Cadastro e login de usuários (token JWT).
