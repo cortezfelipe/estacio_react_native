@@ -3,11 +3,13 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   StyleSheet,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
@@ -36,26 +38,19 @@ export default function ManageSlotsScreen() {
     }
   };
 
-  const handleCreate = async () => {
+  const handleSubmit = async () => {
     try {
-      await api.post("/slots", { name, description });
-      setName("");
-      setDescription("");
-      loadSlots();
-    } catch (err) {
-      Alert.alert("Erro", err.response?.data?.message || "Erro ao criar vaga");
-    }
-  };
-
-  const handleUpdate = async () => {
-    try {
-      await api.put(`/slots/${editingId}`, { name, description });
+      if (editingId) {
+        await api.put(`/slots/${editingId}`, { name, description });
+      } else {
+        await api.post("/slots", { name, description });
+      }
       setName("");
       setDescription("");
       setEditingId(null);
       loadSlots();
     } catch (err) {
-      Alert.alert("Erro", "Erro ao atualizar vaga");
+      Alert.alert("Erro", err.response?.data?.message || "Erro ao salvar vaga");
     }
   };
 
@@ -77,82 +72,165 @@ export default function ManageSlotsScreen() {
   if (!user?.isManager) {
     return (
       <View style={styles.centered}>
-        <Text>Você não tem permissão para gerenciar vagas.</Text>
+        <Text style={styles.permissionText}>Você não tem permissão para gerenciar vagas.</Text>
       </View>
     );
   }
 
+  const renderSlot = ({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.slotName}>{item.name}</Text>
+      <Text style={styles.slotDescription}>{item.description}</Text>
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => handleEdit(item)}
+        >
+          <Text style={styles.buttonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleDelete(item.id)}
+        >
+          <Text style={styles.buttonText}>Excluir</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        {editingId ? "Editar Vaga" : "Criar Nova Vaga"}
-      </Text>
-
-      <TextInput
-        placeholder="Nome da vaga"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Descrição"
-        value={description}
-        onChangeText={setDescription}
-        style={styles.input}
-      />
-      <Button
-        title={editingId ? "Atualizar Vaga" : "Criar Vaga"}
-        onPress={editingId ? handleUpdate : handleCreate}
-      />
-
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+    >
       {loading ? (
-        <ActivityIndicator size="large" />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#007AFF" />
+        </View>
       ) : (
         <FlatList
           data={slots}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.slotItem}>
-              <Text style={styles.slotName}>{item.name}</Text>
-              <Text>{item.description}</Text>
-              <View style={styles.actions}>
-                <Button title="Editar" onPress={() => handleEdit(item)} />
-                <Button
-                  title="Excluir"
-                  color="red"
-                  onPress={() => handleDelete(item.id)}
-                />
-              </View>
+          renderItem={renderSlot}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={
+            <View style={styles.container}>
+              <Text style={styles.title}>
+                {editingId ? "Editar Vaga" : "Criar Nova Vaga"}
+              </Text>
+              <TextInput
+                placeholder="Nome da vaga"
+                value={name}
+                onChangeText={setName}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Descrição"
+                value={description}
+                onChangeText={setDescription}
+                style={styles.input}
+              />
+              <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>
+                  {editingId ? "Atualizar Vaga" : "Criar Vaga"}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.subtitle}>Vagas cadastradas</Text>
             </View>
-          )}
+          }
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 8,
+  container: {
+    padding: 20,
+    backgroundColor: "#F7F9FC",
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "600",
+    marginBottom: 20,
+    color: "#1E1E1E",
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginTop: 10,
     marginBottom: 10,
-    borderRadius: 4,
   },
-  slotItem: {
-    padding: 12,
-    marginVertical: 6,
+  input: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E0E0E0",
     borderWidth: 1,
-    borderColor: "#eee",
-    borderRadius: 6,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
   },
-  slotName: { fontWeight: "bold", fontSize: 16 },
+  primaryButton: {
+    backgroundColor: "#007AFF",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  secondaryButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 6,
+    flex: 1,
+    marginRight: 6,
+    alignItems: "center",
+  },
+  deleteButton: {
+    backgroundColor: "#FF3B30",
+    padding: 10,
+    borderRadius: 6,
+    flex: 1,
+    marginLeft: 6,
+    alignItems: "center",
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  slotName: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  slotDescription: {
+    fontSize: 13,
+    color: "#6B7280",
+  },
   actions: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 12,
   },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  permissionText: {
+    fontSize: 16,
+    color: "#999",
+  },
 });

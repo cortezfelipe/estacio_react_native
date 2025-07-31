@@ -28,7 +28,8 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     // Sync models.  In production you may want to use migrations instead of sync({force})
-    await sequelize.sync({ alter: true });
+    //await sequelize.sync({ alter: true }); // para criar o banco novo
+    await sequelize.sync();
     console.log('Database connected and synchronized.');
     // Seed initial manager if none exists
     const managerCount = await User.count({ where: { role: 'manager' } });

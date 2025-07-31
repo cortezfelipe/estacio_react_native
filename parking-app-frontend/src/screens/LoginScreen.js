@@ -1,12 +1,17 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 
-/**
- * Screen that allows the user to log into the application.  On successful
- * authentication, the global AuthContext will store the user and navigate
- * back to the home screen.
- */
 export default function LoginScreen({ navigation }) {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -23,58 +28,112 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title={loading ? 'Entrando...' : 'Entrar'} onPress={handleLogin} disabled={loading} />
-      <Text style={styles.text}>
-        Não tem uma conta?{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>Cadastre-se</Text>
-      </Text>
-    </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={styles.inner}>
+        <Image
+          source={require('../../assets/images/react-logo.png')} // substitua pela sua imagem
+          style={styles.image}
+          resizeMode="contain"
+        />
+
+        <Text style={styles.title}>Bem-vindo de volta!</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#999"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.signupText}>
+          Não tem uma conta?{' '}
+          <Text style={styles.signupLink} onPress={() => navigation.navigate('Signup')}>
+            Cadastre-se
+          </Text>
+        </Text>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f4f6fc',
+  },
+  inner: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 24,
+    width: '100%',
+    marginTop: -100,
+  },
+  image: {
+    width: 180,
+    height: 180,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 22,
+    fontWeight: '600',
+    marginBottom: 24,
+    color: '#333',
   },
   input: {
     width: '100%',
     height: 48,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 12,
-    marginVertical: 8,
+    borderColor: '#ddd',
   },
-  text: {
-    marginTop: 16,
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 8,
   },
-  link: {
-    color: 'blue',
-    textDecorationLine: 'underline',
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  signupText: {
+    marginTop: 24,
+    color: '#444',
+  },
+  signupLink: {
+    color: '#007bff',
+    fontWeight: 'bold',
   },
 });

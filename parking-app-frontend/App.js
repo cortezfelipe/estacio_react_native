@@ -8,6 +8,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import ReservationScreen from './src/screens/ReservationScreen';
 import ReservationsListScreen from './src/screens/ReservationsListScreen';
 import ManageSlotsScreen from './src/screens/ManageSlotsScreen';
+import EditReservationScreen from './src/screens/EditReservationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ function AppRoutes() {
           <Stack.Screen name="Reserve" component={ReservationScreen} options={{ title: 'Nova Reserva' }} />
           <Stack.Screen name="ReservationsList" component={ReservationsListScreen} options={{ title: 'Reservas' }} />
           <Stack.Screen name="ManageSlots" component={ManageSlotsScreen} options={{ title: 'Gerenciar Vagas' }} />
+          <Stack.Screen name="EditReservation" component={EditReservationScreen} options={{ title: 'Editar Reserva' }} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator initialRouteName="Login">
