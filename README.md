@@ -3,8 +3,8 @@ Aplicativo mobile e API backend para controle de vagas de estacionamento. Usuár
 
 📦 Estrutura do projeto
 estacio_react_native/
-├── parking-app-backend/   # API REST em Node.js/Express + Sequelize (SQLite)
-└── parking-app-frontend/  # Aplicativo mobile em React Native (Expo)
+ parking-app-backend/   # API REST em Node.js/Express + Sequelize (SQLite)
+ parking-app-frontend/  # Aplicativo mobile em React Native (Expo)
 ✨ Funcionalidades
 Frontend (React Native + Expo)
 Cadastro e login de usuários (token JWT).
@@ -72,19 +72,19 @@ PUT	/api/reservations/:id	Atualiza reserva (gestor)
 DELETE	/api/reservations/:id	Remove reserva (gestor)
 🗂 Estrutura de pastas (resumo)
 parking-app-backend/
-├── config/           # Configuração do Sequelize
-├── controllers/      # Lógica dos endpoints
-├── middleware/       # Autenticação e autorização
-├── models/           # Definição das entidades (User, ParkingSlot, Reservation)
-└── routes/           # Arquivos de rotas
+ config/           # Configuração do Sequelize
+ controllers/      # Lógica dos endpoints
+ middleware/       # Autenticação e autorização
+ models/           # Definição das entidades (User, ParkingSlot, Reservation)
+ routes/           # Arquivos de rotas
 
 parking-app-frontend/
-├── src/
-│   ├── api/          # Configuração do axios
-│   ├── context/      # Contexto de autenticação
-│   ├── screens/      # Telas (Login, Home, Reservas, etc.)
-│   └── styles/       # Estilos compartilhados
-└── assets/           # Imagens e outros recursos
+ src/
+  api/          # Configuração do axios
+  context/      # Contexto de autenticação
+  screens/      # Telas (Login, Home, Reservas, etc.)
+  styles/       # Estilos compartilhados
+  assets/           # Imagens e outros recursos
 🤝 Contribuindo
 Faça um fork do projeto.
 
