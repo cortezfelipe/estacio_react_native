@@ -2,15 +2,15 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
-  TextInput,
-  StyleSheet,
-  Alert,
   TouchableOpacity,
-  ActivityIndicator,
   FlatList,
+  Alert,
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { AuthContext } from "../context/AuthContext";
 import api from "../api/api";
 
@@ -18,10 +18,13 @@ export default function EditReservationScreen({ route, navigation }) {
   const { user } = useContext(AuthContext);
   const { reservation } = route.params || {};
 
-  const [date, setDate] = useState(reservation?.date || "");
+  const [date, setDate] = useState(
+    reservation?.date ? new Date(reservation.date) : new Date()
+  );
   const [slotId, setSlotId] = useState(reservation?.slot?.id || null);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== "manager") {
@@ -51,7 +54,7 @@ export default function EditReservationScreen({ route, navigation }) {
     try {
       setLoading(true);
       await api.put(`/reservations/${reservation.id}`, {
-        date,
+        date: date.toISOString().split("T")[0],
         slotId,
       });
       Alert.alert("Sucesso", "Reserva atualizada.");
@@ -60,6 +63,13 @@ export default function EditReservationScreen({ route, navigation }) {
       Alert.alert("Erro", "Erro ao atualizar reserva.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
     }
   };
 
@@ -79,16 +89,20 @@ export default function EditReservationScreen({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.title}>Editar Reserva</Text>
 
-        <Text style={styles.label}>Data (AAAA-MM-DD)</Text>
-        <TextInput
-          value={date}
-          onChangeText={setDate}
-          placeholder="AAAA-MM-DD"
-          style={styles.input}
-        />
+        <Text style={styles.label}>Data da Reserva</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
+          <Text>{date.toISOString().split("T")[0]}</Text>
+        </TouchableOpacity>
+        {showPicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={handleDateChange}
+          />
+        )}
 
         <Text style={styles.label}>Selecionar Vaga</Text>
-
         <FlatList
           data={slots}
           keyExtractor={(item) => item.id.toString()}
