@@ -109,8 +109,36 @@ async function updateReservation(req, res) {
   }
 }
 
+/**
+ * Delete a reservation (only manager).
+ */
+async function deleteReservation(req, res) {
+  const userId = req.userId;
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user || user.role !== 'manager') {
+      return res.status(403).json({ message: 'Access denied. Only managers can delete reservations.' });
+    }
+
+    const reservation = await Reservation.findByPk(id);
+    if (!reservation) {
+      return res.status(404).json({ message: 'Reservation not found.' });
+    }
+
+    await reservation.destroy();
+    return res.status(200).json({ message: 'Reservation deleted successfully.' });
+  } catch (err) {
+    console.error('Failed to delete reservation:', err);
+    return res.status(500).json({ message: 'Failed to delete reservation.' });
+  }
+}
+
+
 module.exports = {
   createReservation,
   listReservations,
   updateReservation,
+  deleteReservation,
 };

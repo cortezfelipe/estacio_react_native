@@ -12,4 +12,8 @@ router.get('/', verifyToken, reservationController.listReservations);
 // Edit reservation (only managers can edit)
 router.put('/:id', verifyToken, reservationController.updateReservation);
 
+// Delete reservation (only managers can delete)
+router.delete('/:id', verifyToken, reservationController.deleteReservation);
+
+
 module.exports = router;
