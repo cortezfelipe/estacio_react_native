@@ -4,8 +4,8 @@ Aplicativo mobile e API backend para controle de vagas de estacionamento. Usuár
 📦 Estrutura do projeto
 
  * estacio_react_native/ 
-    -parking-app-backend/    API REST em Node.js/Express + Sequelize (SQLite)
-    -parking-app-frontend/   Aplicativo mobile em React Native (Expo)
+    *parking-app-backend/    API REST em Node.js/Express + Sequelize (SQLite)
+    *parking-app-frontend/   Aplicativo mobile em React Native (Expo)
 
 ✨ Funcionalidades
 Frontend (React Native + Expo)
